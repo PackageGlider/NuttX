@@ -72,8 +72,6 @@ static int pseudorename(FAR const char *oldpath, FAR struct inode *oldinode,
    * first, provided that it is not a directory.
    */
 
-next_subdir:
-
   SETUP_SEARCH(&newdesc, newpath, true);
   ret = inode_find(&newdesc);
   if (ret >= 0)
@@ -139,14 +137,6 @@ next_subdir:
             }
 
           newpath = subdir;
-
-          /* This can be a recursive case, another inode may already exist
-           * at oldpth/subdirname.  In that case, we need to do this all
-           * over again.  A nasty goto is used because I am lazy.
-           */
-
-          RELEASE_SEARCH(&newdesc);
-          goto next_subdir;
         }
       else
         {
@@ -332,8 +322,6 @@ static int mountptrename(FAR const char *oldpath, FAR struct inode *oldinode,
     {
       struct stat buf;
 
-next_subdir:
-
       /* Something exists for this directory entry.  Do nothing in the
        * degenerate case where a directory or file is being moved to
        * itself.
@@ -390,14 +378,6 @@ next_subdir:
 
                       newrelpath = subdir;
                     }
-
-                  /* This can be a recursive, another directory may already
-                   * exist at the newrelpath.  In that case, we need to
-                   * do this all over again.  A nasty goto is used because
-                   * I am lazy.
-                   */
-
-                  goto next_subdir;
                 }
               else if (oldinode->u.i_mops->unlink)
                 {
